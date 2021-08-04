@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LispLib", "LispLib\LispLib.csproj", "{DB4ACEC7-5C45-42C7-9614-6912FA8A9BD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Listener", "Listener\Listener.csproj", "{A55692AB-A62B-4422-9E02-65E88B8542EE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DB4ACEC7-5C45-42C7-9614-6912FA8A9BD8} = {DB4ACEC7-5C45-42C7-9614-6912FA8A9BD8}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB4ACEC7-5C45-42C7-9614-6912FA8A9BD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB4ACEC7-5C45-42C7-9614-6912FA8A9BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB4ACEC7-5C45-42C7-9614-6912FA8A9BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB4ACEC7-5C45-42C7-9614-6912FA8A9BD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A55692AB-A62B-4422-9E02-65E88B8542EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A55692AB-A62B-4422-9E02-65E88B8542EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A55692AB-A62B-4422-9E02-65E88B8542EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A55692AB-A62B-4422-9E02-65E88B8542EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F92F5D9C-F559-4BAA-A251-70E8B0AE7643}
+	EndGlobalSection
+EndGlobal
