@@ -9,7 +9,12 @@ namespace Listener
     class Program
     {
         static void Main (string[] args) {
-            object form = LispLib.Reader.Read ();
+            while () {
+                System.Console.Write ("> ");
+                object form = LispLib.Reader.Read (System.Console.In, true, null, false);
+                System.Console.Write ("\n");
+                System.Console.Write (form.ToString ());
+            }
         }
     }
 }
