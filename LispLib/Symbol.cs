@@ -31,7 +31,7 @@ namespace LispLib
                     string typeName = name.Substring (0, lastDot);
                     Type? type = null;
                     foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
-                        type = assembly.GetType (typeName);
+                        type = assembly.GetType (typeName, false, true);
                         if (type != null) break;
                     }
                     if (type == null) throw new NotImplementedException ();

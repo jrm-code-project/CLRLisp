@@ -1,5 +1,36 @@
 (declare (usual-integrations))
 
+(define file->list
+  (lambda (file)
+  (call-with-input-file
+   file
+   (lambda (port)
+     (port->list port)))))
+
+(define port->list
+    (lambda (port)
+    (let ((item (read port)))
+      (if (eof-object? item)
+          '()
+          (cons item (port->list port))))))
+
+(define process-file
+  (lambda (infile outfile id)
+    (call-with-output-file
+     outfile
+     (lambda (port)
+       (write-string "// Automatically generated.  Don't bother to edit." port) (newline port)
+       (newline port)
+       (write-string "using LispLib;" port) (newline port)
+       (newline port)
+       (write-string "class " port) (write-string id port) (newline port)
+       (write-string "{" port) (newline port)
+       (write-string "    public static List Read () =>" port) (newline port)
+       (dump-object (file->list infile) port 8)
+       (write-string ";" port) (newline port)
+       (write-string "}" port) (newline port)
+       ))))
+
 (define indent
   (lambda (indentation stream)
     (unless (zero? indentation)
@@ -43,12 +74,14 @@
 
 (define dump-string
   (lambda (string stream)
-    (write-string "\"" stream)
+    (write-char #\" stream)
     (write-string string stream)
-    (write-string "\"" stream)))
+    (write-char #\" stream)))
 
 (define dump-symbol
   (lambda (symbol stream)
-    (write-string "Symbol.Intern (\"" stream)
+    (write-string "Symbol.Intern (" stream)
+    (write-char #\" stream)
     (write-string (symbol-name symbol) stream)
-    (write-string "\")" stream)))
+    (write-char #\" stream)
+    (write-string ")" stream)))

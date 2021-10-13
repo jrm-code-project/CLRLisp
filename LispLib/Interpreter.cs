@@ -6,8 +6,19 @@ using System.Threading.Tasks;
 
 namespace LispLib
 {
-    class Interpreter
+    public class Interpreter
     {
+        public static void Initialize () {
+            Boot.Read().Mapc (expr => Eval (expr, Environment.User));
+        }
+
+        public static object? Apply (object? o, List arglist) {
+            return
+                (o is null) ? throw new NotImplementedException ()
+                : (o is IApplicable oApplicable) ? oApplicable.Apply (arglist)
+                : throw new NotImplementedException ();
+        }
+
         public static object? Eval (object? o, Environment environment) {
             return
                 (o is null) ? o
@@ -17,11 +28,5 @@ namespace LispLib
                 : throw new NotImplementedException();
         }
 
-        public static object? Apply (object? o, List arglist) {
-            return
-                (o is null) ? throw new NotImplementedException ()
-                : (o is IApplicable oApplicable) ? oApplicable.Apply (arglist)
-                : throw new NotImplementedException ();
-        }
     }
 }
