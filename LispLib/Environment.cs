@@ -11,20 +11,29 @@ namespace LispLib
         private static readonly Environment global = new();
         private static readonly Environment user = new(global);
 
-        private readonly Dictionary<Symbol, object> bindings;
+        private readonly Dictionary<Symbol, object?> bindings;
         private readonly Environment? parent;
 
         private Environment () {
-            this.bindings = new Dictionary<Symbol, object> ();
+            this.bindings = new Dictionary<Symbol, object?> ();
             this.parent = null;
         }
 
         public Environment (Environment parent) {
-            this.bindings = new Dictionary<Symbol, object> ();
+            this.bindings = new Dictionary<Symbol, object?> ();
             this.parent = parent;
         }
 
-        public object Lookup (Symbol symbol) {
+        public Environment Extend (List names, List values) {
+            Environment result = new Environment (this);
+            List.Mapc ((name, value) => {
+                if (name is null) throw new NotImplementedException ();
+                result.bindings.Add ((Symbol) name, value);
+            }, names, values);              
+            return result;
+        }
+
+        public object? Lookup (Symbol symbol) {
             if (bindings.TryGetValue (symbol, out object? answer))
                 return answer;
             else if (parent != null)

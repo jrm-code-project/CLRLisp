@@ -20,7 +20,7 @@ namespace LispLib
         public static object? Apply (object? o, List arglist) {
             return
                 (o is null) ? throw new NotImplementedException ()
-                : (o is LateBoundStaticMethod oLBSM) ? oLBSM.Apply (arglist)
+                : (o is IApplicable oApplicable) ? oApplicable.Apply (arglist)
                 : throw new NotImplementedException ();
         }
     }

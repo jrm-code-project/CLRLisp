@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LispLib
 {
-    class LateBoundStaticMethod
+    class LateBoundStaticMethod : IApplicable
     {   
         private readonly string methodName;
         private readonly Type type;

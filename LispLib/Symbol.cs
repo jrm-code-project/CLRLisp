@@ -18,18 +18,31 @@ namespace LispLib
             internTable.Add (name, this);
         }
 
-        public object Eval (Environment environment) {
+        public object? Eval (Environment environment) {
             if (name.Contains ('.')) {
-                int lastDot = name.LastIndexOf ('.');
-                string typeName = name.Substring (0, lastDot);
-                string methodName = name[(lastDot + 1)..];
-                Type? type = null;
-                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                    type = assembly.GetType (typeName);
-                    if (type != null) break;
+                if (name.StartsWith('.')) {
+                    if (name.EndsWith('$')) {
+                        return new LateBoundProperty (name[1..^1]);
+                    } else {
+                        return new LateBoundMethod (name[1..]);
+                    }
+                } else {
+                    int lastDot = name.LastIndexOf ('.');
+                    string typeName = name.Substring (0, lastDot);
+                    Type? type = null;
+                    foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
+                        type = assembly.GetType (typeName);
+                        if (type != null) break;
+                    }
+                    if (type == null) throw new NotImplementedException ();
+                    if (name.EndsWith ('$')) {
+                        string propertyName = name[(lastDot + 1)..^1];
+                        return new LateBoundStaticProperty (type, propertyName);
+                    } else {
+                        string methodName = name[(lastDot + 1)..];
+                        return new LateBoundStaticMethod (type, methodName);
+                    }
                 }
-                if (type == null) throw new NotImplementedException ();
-                return new LateBoundStaticMethod (type, methodName);
             } else {
                 return environment.Lookup (this);
             }
