@@ -11,6 +11,8 @@ namespace LispLib
         private static readonly Environment global = new();
         private static readonly Environment user = new(global);
 
+        private static readonly object notFound = new();
+
         private readonly Dictionary<Symbol, object?> bindings;
         private readonly Environment? parent;
 
@@ -25,7 +27,7 @@ namespace LispLib
         }
 
         public Environment Extend (List names, List values) {
-            Environment result = new Environment (this);
+            Environment result = new(this);
             List.Mapc ((name, value) => {
                 if (name is null) throw new NotImplementedException ();
                 result.bindings.Add ((Symbol) name, value);
@@ -39,8 +41,10 @@ namespace LispLib
             else if (parent != null)
                 return parent.Lookup (symbol);
             else
-                throw new NotImplementedException ();
+                return notFound;
         }
+
+        public static object NotFound => notFound;
 
         public static Environment User => user;
     }

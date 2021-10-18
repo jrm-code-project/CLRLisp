@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LispLib
 {
-    public class Symbol
+    public class Symbol : IEval
     {
         private static readonly Dictionary<string, Symbol> internTable = new();
         private readonly string name;
@@ -18,33 +18,48 @@ namespace LispLib
             internTable.Add (name, this);
         }
 
+        static Type? GetType (string name) {
+            Type? answer = null;
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+                answer = assembly.GetType (name, false, true);
+                if (answer != null) break;
+            }
+            return answer;
+        }
+
         public object? Eval (Environment environment) {
-            if (name.Contains ('.')) {
-                if (name.StartsWith('.')) {
-                    if (name.EndsWith('$')) {
-                        return new LateBoundProperty (name[1..^1]);
+            object? value = environment.Lookup (this);
+            if (value == Environment.NotFound) {
+                if (name.Contains ('.')) {
+                    if (name.EndsWith ('.')) {
+                        string typeName = name[0..^1];
+                        Type? type = GetType (typeName);
+                        if (type == null) throw new NotImplementedException ();
+                        return new LateBoundConstructor (type);
+                    } else if (name.StartsWith ('.')) {
+                        if (name.EndsWith ('$')) {
+                            return new LateBoundProperty (name[1..^1]);
+                        } else {
+                            return new LateBoundMethod (name[1..]);
+                        }
                     } else {
-                        return new LateBoundMethod (name[1..]);
+                        int lastDot = name.LastIndexOf ('.');
+                        string typeName = name.Substring (0, lastDot);
+                        Type? type = GetType (typeName);
+                        if (type == null) throw new NotImplementedException ();
+                        if (name.EndsWith ('$')) {
+                            string propertyName = name[(lastDot + 1)..^1];
+                            return new LateBoundStaticProperty (type, propertyName);
+                        } else {
+                            string methodName = name[(lastDot + 1)..];
+                            return new LateBoundStaticMethod (type, methodName);
+                        }
                     }
                 } else {
-                    int lastDot = name.LastIndexOf ('.');
-                    string typeName = name.Substring (0, lastDot);
-                    Type? type = null;
-                    foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
-                        type = assembly.GetType (typeName, false, true);
-                        if (type != null) break;
-                    }
-                    if (type == null) throw new NotImplementedException ();
-                    if (name.EndsWith ('$')) {
-                        string propertyName = name[(lastDot + 1)..^1];
-                        return new LateBoundStaticProperty (type, propertyName);
-                    } else {
-                        string methodName = name[(lastDot + 1)..];
-                        return new LateBoundStaticMethod (type, methodName);
-                    }
+                    throw new NotImplementedException ();
                 }
             } else {
-                return environment.Lookup (this);
+                return value;
             }
         }
 

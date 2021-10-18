@@ -22,10 +22,8 @@ namespace LispLib
         public static object? Eval (object? o, Environment environment) {
             return
                 (o is null) ? o
-                : (o is List oList) ? oList.Eval (environment)
-                : (o is string oString) ? oString
-                : (o is Symbol oSymbol) ? oSymbol.Eval (environment)
-                : throw new NotImplementedException();
+                : (o is IEval oEval) ? oEval.Eval (environment)
+                : o;
         }
 
     }

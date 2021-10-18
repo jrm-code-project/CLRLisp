@@ -5,7 +5,7 @@ namespace LispLib
     public delegate void VoidFunc<T> (T argument);
     public delegate void VoidFunc<T1, T2> (T1 arg1, T2 arg2);
 
-    public struct List {
+    public struct List : IEval {
 
         static readonly Symbol lambda = Symbol.Intern ("lambda");
 
